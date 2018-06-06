@@ -5,6 +5,8 @@ plugins {
 allprojects {
 	apply plugin: "eclipse-wtp"
 	apply plugin: "idea"
+	apply plugin: "maven"
+	apply plugin: 'maven-publish'
 }
 
 //common for both projects
@@ -51,6 +53,28 @@ project(":addon") {
 	}
 
 	war.enabled = false //war plugin applied by the Vaadin plugin, not needed here
+
+	repositories {
+	  mavenLocal()
+	}
+
+	publishing {
+		repositories {
+			mavenLocal()
+			maven {
+				url "sftp://maven.antea.bogus:22/srv/maven"
+				credentials {
+                        username "russo.federico"
+                        password "PASSWORD"
+                    }
+			}
+		}
+	  publications {
+	    mavenJava(MavenPublication) {
+	      from components.java
+	    }
+	  }
+	}
 }
 
 //demo project, builds addon and packages demo UI as WAR
